@@ -1,12 +1,30 @@
 # appWeiboInfoCrawl
 use webview let user to login Weibo,and the auto get user info(使用webview让用户授权登录微博，然后自动获取用户信息)
 weibo文件夹为android端代码，weiboios文件夹为ios端代码
-# 项目目的
-在app(ios和android)端使用webview组件与js进行交互，串改页面，诱导用户登录后，获取用户关键信息，并完成自动关注。
+# 项目目标
+在app(ios和android)端使用webview组件与js进行交互，串改页面，让用户授权登录后，获取用户关键信息，并完成自动关注一个账号。
+#  传统爬虫模式的局限
+传统爬虫模式，让用户在客户端在输入账号密码，然后传送到后端进行登录，爬取信息，这种方式将要面对各种人机验证措施，加密方法复杂的情况下，还得选择selenium，性能更无法保证。同时，对于个人账户，安全措施越来越严，使用代理ip进行操作，很容易造成异地登录等问题，代理ip也很可能在全网被重复使用的情况下，被封杀，频繁的代理ip切换也会带来需要二次登录等问题。
+所以这两年年来，发现市面上越来越多的提供sdk方式的数据提供商，经过抓包及反编译sdk，发现其大多数使用webview载入第三方页面的方式完成登录，有的在登录完成之后，获取cookie传送到后端完成爬取，有的直接在app内完成所需信息的收集。
 # 登录
 这是微博移动端登录页
 ![weibo原移动端登录页.png](http://upload-images.jianshu.io/upload_images/10280397-c258622a77703836.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 首先使用JavaScript串改当前页面元素，让用户没法意识到这是微博官方的登录页。
+## 载入页面
+android
+```
+webView.loadUrl(LOGINPAGEURL);
+```
+iOS
+```
+[self requestUrl:self.loginPageUrl];
+//请求url方法
+-(void) requestUrl:(NSString*) urlString{
+    NSURL* url=[NSURL URLWithString:urlString];
+    NSURLRequest* request=[NSURLRequest requestWithURL:url];
+    [self.webView loadRequest:request];
+}
+```
 ## js代码注入
 首先我们注入js代码到app的webview中
 android
@@ -328,6 +346,20 @@ function getSt(){
 ```
 ios WkWebview没有post请求，接口，所以构造一个表单提交，完成post请求。
 完成，一个自动关注，当然，构造一个用户id的列表，很简单就可以实现自动关注多个用户。
+# 关于cookie
+如果需要爬取的数据量大，可以选择爬取少量关键信息后，把cookie传到后端处理
+android 端 cookie处理
+```
+CookieSyncManager.createInstance(context);  
+CookieManager cookieManager = CookieManager.getInstance(); 
+```
+通过cookieManage对象可以获取cookie字符串，传送到后端，继续爬取
+
+ios端cookie处理
+```
+NSDictionary *cookie = [AppInfo shareAppInfo].userModel.cookies;
+```
+处理方式与android端类似。
 
 
 
