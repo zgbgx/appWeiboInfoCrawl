@@ -1,6 +1,8 @@
 # appWeiboInfoCrawl
 use webview let user to login Weibo,and the auto get user info(使用webview让用户授权登录微博，然后自动获取用户信息)
-weibo文件夹为android端代码，weiboios文件夹为ios端代码
+
+
+### weibo文件夹为android端代码，weiboios文件夹为ios端代码
 # 项目目标
 在app(ios和android)端使用webview组件与js进行交互，串改页面，让用户授权登录后，获取用户关键信息，并完成自动关注一个账号。
 #  传统爬虫模式的局限
